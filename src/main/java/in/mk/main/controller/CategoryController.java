@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import in.mk.main.dto.CategoryDto;
+import in.mk.main.dto.CategoryResponse;
 import in.mk.main.entity.Category;
 import in.mk.main.service.CategoryService;
 
@@ -28,8 +30,8 @@ public class CategoryController {
 	//Is used to create new data in datbase
 	//requestbody ensure data will be return in json or xml formate
 	@PostMapping("/save-category")
-	public ResponseEntity<?> saveCategory(@RequestBody Category category){
-		Boolean saveCategory = categoryService.saveCategory(category);
+	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto){
+		Boolean saveCategory = categoryService.saveCategory(categoryDto);
 		
 		if(saveCategory) {
 			 return new ResponseEntity<>("saved",HttpStatus.CREATED);
@@ -43,7 +45,22 @@ public class CategoryController {
 	@GetMapping("/category")
 	public ResponseEntity<?> getAllCategory(){
 		
-		List<Category> allcategory = categoryService.getAllCategory();
+		List<CategoryDto> allcategory = categoryService.getAllCategory();
+		
+		if(CollectionUtils.isEmpty(allcategory)){
+			return ResponseEntity.noContent().build();
+		}
+		else {
+			return new ResponseEntity<>(allcategory,HttpStatus.OK);
+		}
+		
+		
+	}
+	
+	@GetMapping("/active-category")
+	public ResponseEntity<?> getActiveCategory(){
+		
+		List<CategoryResponse> allcategory = categoryService.getActiveCategory();
 		
 		if(CollectionUtils.isEmpty(allcategory)){
 			return ResponseEntity.noContent().build();
