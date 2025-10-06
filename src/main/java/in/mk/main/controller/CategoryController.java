@@ -3,6 +3,7 @@ package in.mk.main.controller;
 import java.security.PublicKey;
 import java.util.List;
 
+import org.aspectj.lang.reflect.CatchClauseSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import in.mk.main.dto.CategoryDto;
 import in.mk.main.dto.CategoryResponse;
 import in.mk.main.entity.Category;
+import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.service.CategoryService;
 
 @RestController
@@ -45,8 +47,11 @@ public class CategoryController {
 		
 	}
 	
-	@GetMapping("/category")
+	@GetMapping("/")
 	public ResponseEntity<?> getAllCategory(){
+		
+//		String nmString =null;
+//		nmString.toUpperCase();
 		
 		List<CategoryDto> allcategory = categoryService.getAllCategory();
 		
@@ -76,16 +81,20 @@ public class CategoryController {
 	}
 		
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id){
+	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception{
+		
+		
+		
+		
 		CategoryDto categoryDto = categoryService.getCategoryById(id);
 	
 		if (ObjectUtils.isEmpty(categoryDto)) {
 			
-			return new ResponseEntity<>("category not found with" +id,HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("internal server error",HttpStatus.NOT_FOUND);
 		}
 			return new ResponseEntity<>(categoryDto,HttpStatus.OK);
-		}
-		
+		} 
+	
 	
 
 @DeleteMapping("/{id}")
