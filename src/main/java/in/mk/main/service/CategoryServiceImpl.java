@@ -1,5 +1,6 @@
 package in.mk.main.service;
 
+import java.security.PrivateKey;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import in.mk.main.dto.CategoryResponse;
 import in.mk.main.entity.Category;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.respository.CategoryRepository;
+import in.mk.main.util.Validation;
 
 @Service
 public class CategoryServiceImpl implements CategoryService{
@@ -26,17 +28,17 @@ public class CategoryServiceImpl implements CategoryService{
     @Autowired
 	private ModelMapper mapper;
 	
-	
+	@Autowired
+    private Validation validation;
 	
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
+
 		
-//		Category category = new Category();
-//		category.setName(categoryDto.getName());
-//		category.setDescription(categoryDto.getDescription());
-//		category.setIsActive(categoryDto.getIsActive());
+		//validation checking 
 		
 		
+		validation.categoryValidation(categoryDto);
 		
 	Category category=mapper.map(categoryDto,Category.class);
 		

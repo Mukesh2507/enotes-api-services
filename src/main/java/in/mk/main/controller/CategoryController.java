@@ -24,6 +24,7 @@ import in.mk.main.entity.Category;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.service.CategoryService;
 
+
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
@@ -35,7 +36,7 @@ public class CategoryController {
 	//Is used to create new data in datbase
 	//requestbody ensure data will be return in json or xml formate
 	@PostMapping("/save-category")
-	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto){
+	public ResponseEntity<?> saveCategory( @RequestBody CategoryDto categoryDto){
 		Boolean saveCategory = categoryService.saveCategory(categoryDto);
 		
 		if(saveCategory) {
