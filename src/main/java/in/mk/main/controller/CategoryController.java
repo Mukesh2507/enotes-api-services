@@ -1,11 +1,7 @@
 package in.mk.main.controller;
 
-import java.security.PublicKey;
 import java.util.List;
-
-import org.aspectj.lang.reflect.CatchClauseSignature;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +19,7 @@ import in.mk.main.dto.CategoryResponse;
 import in.mk.main.entity.Category;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.service.CategoryService;
+import in.mk.main.util.CommonUtil;
 
 
 @RestController
@@ -40,27 +37,26 @@ public class CategoryController {
 		Boolean saveCategory = categoryService.saveCategory(categoryDto);
 		
 		if(saveCategory) {
-			 return new ResponseEntity<>("saved",HttpStatus.CREATED);
+			
+		return CommonUtil.createBuildResponse("Saved successfully", HttpStatus.CREATED); //implementation of generic response handler 
+			// return new ResponseEntity<>("saved",HttpStatus.CREATED);
 		}
 		else {
-			 return new ResponseEntity<>("saved",HttpStatus.INTERNAL_SERVER_ERROR);
+			return   CommonUtil.createErrorResponseMessage("not saved", HttpStatus.INTERNAL_SERVER_ERROR);
+			//return new ResponseEntity<>("saved",HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		
 	}
 	
 	@GetMapping("/")
 	public ResponseEntity<?> getAllCategory(){
-		
-//		String nmString =null;
-//		nmString.toUpperCase();
-		
 		List<CategoryDto> allcategory = categoryService.getAllCategory();
-		
 		if(CollectionUtils.isEmpty(allcategory)){
 			return ResponseEntity.noContent().build();
 		}
 		else {
-			return new ResponseEntity<>(allcategory,HttpStatus.OK);
+			return CommonUtil.createBuildResponse(allcategory, HttpStatus.OK);
+			//return new ResponseEntity<>(allcategory,HttpStatus.OK);
 		}
 		
 		
@@ -75,7 +71,10 @@ public class CategoryController {
 			return ResponseEntity.noContent().build();
 		}
 		else {
-			return new ResponseEntity<>(allcategory,HttpStatus.OK);
+			
+			return CommonUtil.createBuildResponse(allcategory, HttpStatus.OK);
+
+			//return new ResponseEntity<>(allcategory,HttpStatus.OK);
 		}
 		
 		
@@ -90,10 +89,13 @@ public class CategoryController {
 		CategoryDto categoryDto = categoryService.getCategoryById(id);
 	
 		if (ObjectUtils.isEmpty(categoryDto)) {
-			
-			return new ResponseEntity<>("internal server error",HttpStatus.NOT_FOUND);
+			return CommonUtil.createErrorResponseMessage("Internal server error", HttpStatus.NOT_FOUND);
+
+			//return new ResponseEntity<>("internal server error",HttpStatus.NOT_FOUND);
 		}
-			return new ResponseEntity<>(categoryDto,HttpStatus.OK);
+		return CommonUtil.createBuildResponse(categoryDto, HttpStatus.OK);
+
+			//return new ResponseEntity<>(categoryDto,HttpStatus.OK);
 		} 
 	
 	
@@ -103,10 +105,13 @@ public ResponseEntity<?> deleteCategoryById(@PathVariable Integer id){
 	Boolean deleted = categoryService.deleteCategory(id);
 
 	if (deleted) {
-		
-		return new ResponseEntity<>("category deleted",HttpStatus.OK);
+		return CommonUtil.createBuildResponse("category deleted successfully", HttpStatus.OK);
+
+		//return new ResponseEntity<>("category deleted",HttpStatus.OK);
 	}
-		return new ResponseEntity<>("category not delted",HttpStatus.INTERNAL_SERVER_ERROR);
+	return CommonUtil.createErrorResponseMessage("category not deleted", HttpStatus.INTERNAL_SERVER_ERROR);
+
+		//return new ResponseEntity<>("category not delted",HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 }
