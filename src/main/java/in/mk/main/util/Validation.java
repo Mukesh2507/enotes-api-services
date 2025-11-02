@@ -26,8 +26,8 @@ public class Validation {
 			    	
 			    	error.put("name","name filed is empty null");
 			    }else {
-			    	if(categoryDto.getName().length()<10) {
-			    		error.put("name", "name length is min 10");
+			    	if(categoryDto.getName().length()<3) {
+			    		error.put("name", "name length is min 3");
 			    	}
 			    	if(categoryDto.getName().length()>100) {
 			    		error.put("name", "name length is max 100");
@@ -49,7 +49,7 @@ public class Validation {
 			    	error.put("isActive","isActive filed is empty or null");
 			    }else {
 			    	
-			    	if(categoryDto.getIsActive() !=Boolean.TRUE.booleanValue()  && categoryDto.getIsActive() !=Boolean.FALSE.booleanValue()) {
+	 		    	if(categoryDto.getIsActive() !=Boolean.TRUE.booleanValue()  && categoryDto.getIsActive() !=Boolean.FALSE.booleanValue()) {
 			    		
 			    		error.put("isActive", "invalid value isActive field");
 			    	}
