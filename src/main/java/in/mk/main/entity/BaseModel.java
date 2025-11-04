@@ -21,10 +21,10 @@ import lombok.Setter;
 public abstract class BaseModel {
 	
 	@Column(nullable = false)
-    private Boolean isActive;
+    private Boolean isActive=true;
 	
 	@Column(nullable = false)
-	private Boolean isDeleted;
+	private Boolean isDeleted=false;
 	
 	@CreatedBy
     private Integer createdBy;
