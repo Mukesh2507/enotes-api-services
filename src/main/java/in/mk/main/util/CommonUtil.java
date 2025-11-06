@@ -1,9 +1,12 @@
 package in.mk.main.util;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import in.mk.main.dto.handler.GenericResponse;
+import jakarta.persistence.criteria.CriteriaBuilder.Case;
 
 public class CommonUtil {
 
@@ -51,5 +54,33 @@ public static ResponseEntity<?> createErrorResponseMessage(String message,HttpSt
 			             .build();
 	return response.create();
 	
+}
+public static String getContentType(String originalfileName) {
+	
+	String extension = FilenameUtils.getExtension(originalfileName);
+	
+	switch (extension) {
+	case "pdf": 
+		
+		return "application/pdf";
+     
+	case "xlsx":
+		return "application/vnd.openxmlformats-officedocument.spreadsheettml.sheett";
+	case "txt":
+		return "text/plan";
+		
+	case "png":
+		return "image/png";
+		
+	case "jpeg":
+		return "image/jpeg";
+				
+	default:
+		return "application/octet-stream";
+			
+	}
+	
+	
+
 }
 }

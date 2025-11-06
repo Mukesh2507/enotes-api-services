@@ -1,9 +1,12 @@
 package in.mk.main.controller;
 
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,19 +16,29 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import in.mk.main.dto.NotesDto;
+import in.mk.main.entity.FilesDetails;
+import in.mk.main.respository.FileRepository;
 import in.mk.main.service.NotesService;
 import in.mk.main.util.CommonUtil;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
 @RestController
 @RequestMapping("/api/v1/notes")
 public class NotesController {
+
+    private final FileRepository fileRepository;
 	
 	@Autowired
 	private NotesService notesService;
+
+
+    NotesController(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
 	
 
 	@PostMapping("/")
@@ -38,6 +51,21 @@ public class NotesController {
 			
 		return CommonUtil.createErrorResponseMessage("Notes not saved", HttpStatus.INTERNAL_SERVER_ERROR);
 		
+	}
+	
+	@GetMapping("/download/{id}")
+	public ResponseEntity<?> downloadFile(@PathVariable Integer id) throws Exception{
+	
+		FilesDetails filesDetails=notesService.getFileDetails(id);
+		byte[] downloadFile =notesService.downloadFile(filesDetails);
+
+		
+	HttpHeaders headers = new HttpHeaders();
+	String contentTypeString =CommonUtil.getContentType(filesDetails.getOriginalfileName());
+	headers.setContentType(MediaType.parseMediaType(contentTypeString));
+	headers.setContentDispositionFormData("attachment", filesDetails.getOriginalfileName());
+	
+	return ResponseEntity.ok().headers(headers).body(downloadFile);
 	}
 
 	
