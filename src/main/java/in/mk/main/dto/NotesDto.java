@@ -1,5 +1,6 @@
 package in.mk.main.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -30,7 +31,10 @@ private Integer createdBy;
 	private Integer updatedBy;
 	
 	private Date updatedOn;
+private Boolean isDeleted;
 	
+	private LocalDateTime deletedOn;
+	 
 	private FilesDto filesDetails;
 	
 	
