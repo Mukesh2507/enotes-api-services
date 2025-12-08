@@ -17,10 +17,12 @@ import in.mk.main.dto.CategoryDto;
 import in.mk.main.dto.TodoDto;
 import in.mk.main.dto.UserDto;
 import in.mk.main.enums.TodoStatus;
+import in.mk.main.exception.ExistDataException;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.exception.ValidationException;
 import in.mk.main.respository.FavouriteNotesRepository;
 import in.mk.main.respository.RoleRepository;
+import in.mk.main.respository.UserRepository;
 
 @Component
 public class Validation {
@@ -29,6 +31,10 @@ public class Validation {
 
 @Autowired
 private RoleRepository roleRepo;
+
+
+@Autowired
+private UserRepository userRepo;
 
 
     Validation(FavouriteNotesRepository favouriteNotesRepository) {
@@ -126,6 +132,15 @@ private RoleRepository roleRepo;
 			!userDto.getEmail().matches(Constants.Email_Regex)) {
 				
 			    throw new IllegalArgumentException("email is invalid");
+				} else {
+					Boolean existEmail =userRepo.existsByEmail(userDto.getEmail());
+					
+					if (existEmail) {
+						
+						throw new ExistDataException("Email id already exist");
+						
+						
+					}
 				}
 			
 			if (!StringUtils.hasText(userDto.getMobNo()) || !userDto.getMobNo().matches(Constants.mOBILE_REGEX)) {
@@ -151,10 +166,7 @@ private RoleRepository roleRepo;
 					
 				}
 				
-				
-				
-				
-			}
+				}
 		
 		
 		
