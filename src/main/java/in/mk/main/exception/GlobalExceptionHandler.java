@@ -1,6 +1,8 @@
 package in.mk.main.exception;
 
 import java.io.FileNotFoundException;
+import java.lang.System.Logger;
+import java.security.PublicKey;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import in.mk.main.util.CommonUtil;
+import lombok.extern.java.Log;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +24,17 @@ public class GlobalExceptionHandler {
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<?> handleIllegalArgumentexception(IllegalArgumentException e){
+		
+		//log.error("GlobalExceptionHandler ::handleException::",e.getMessage());
+		
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+	{
+		
 	}
 	
 	@ExceptionHandler(NullPointerException.class)
