@@ -13,7 +13,7 @@ import in.mk.main.service.UserService;
 import in.mk.main.util.CommonUtil;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
    
 	
