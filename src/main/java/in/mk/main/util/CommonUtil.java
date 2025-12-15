@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import in.mk.main.dto.handler.GenericResponse;
 import jakarta.persistence.criteria.CriteriaBuilder.Case;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class CommonUtil {
 
@@ -82,5 +83,10 @@ public static String getContentType(String originalfileName) {
 	
 	
 
+}
+
+public static String getUrl(HttpServletRequest request) {
+	String apiUrl = request.getRequestURI().toString();
+	return apiUrl;
 }
 }
