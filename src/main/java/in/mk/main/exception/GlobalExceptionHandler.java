@@ -7,6 +7,7 @@ import java.security.PublicKey;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -91,6 +92,13 @@ public class GlobalExceptionHandler {
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.NOT_FOUND);
+
+	}
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<?>handleBadCreadentialException(BadCredentialsException e)
+	{
+		//return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
 
 	}
 

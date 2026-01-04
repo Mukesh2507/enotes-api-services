@@ -5,10 +5,17 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import in.mk.main.config.security.CustomUserDetails;
 import in.mk.main.dto.Emailrequest;
+import in.mk.main.dto.LoginRequest;
+import in.mk.main.dto.LoginResponse;
 import in.mk.main.dto.UserDto;
 import in.mk.main.entity.AccountStatus;
 import in.mk.main.entity.Role;
@@ -38,6 +45,17 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private Validation validation;
+	
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JwtService jwtService;
+	
 	@Override
 	public Boolean register(UserDto userDto) throws Exception {
 		
@@ -53,6 +71,7 @@ public class UserServiceImpl implements UserService{
 				.build();
 		 
 		user.setStatus(status);
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 	    User	saveUser=userRepos.save(user);
 	    if (!ObjectUtils.isEmpty(saveUser)) {
 	    	
@@ -92,6 +111,32 @@ message=message.replace("[[url]]","http://localhost:8080/api/v1/home/verify?uid=
 		List<Role> roles=roleRepo.findAllById(reqRoleId);
 		user.setRoles(roles);
 	}
+	@Override
+	public LoginResponse login(LoginRequest loginRequest) {
+		
+	Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
+		
+		if (authenticate.isAuthenticated()) {
+
+		       CustomUserDetails customUserDetails  =(CustomUserDetails)authenticate.getPrincipal(); 
+		       
+		       String token =jwtService.generateToken(customUserDetails.getUser());
+		       
+		       LoginResponse loginResponse =LoginResponse.builder()
+		    		   .user(mapper.map(customUserDetails.getUser(),UserDto.class))
+		    		   .token(token)
+		    		   .build();
+		       
+		       
+		       return loginResponse;
+			
+		}
+		
+		
+		return null;
+	}
+	
+	
 	
 	
 	
