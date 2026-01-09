@@ -107,9 +107,19 @@ message=message.replace("[[url]]","http://localhost:8080/api/v1/home/verify?uid=
 		emailService.sendEmail(emailrequest);
 	}
 	private void setRole(UserDto userDto, User user) {
-		List<Integer> reqRoleId = userDto.getRoles().stream().map(r->r.getId()).toList();
-		List<Role> roles=roleRepo.findAllById(reqRoleId);
+		List<Integer> roleIds = userDto.getRoles()
+		        .stream()
+		        .map(UserDto.RoleDto::getId)
+		        .toList();
+
+		List<Role> roles = roleRepo.findAllById(roleIds);
+
+		if (roles.isEmpty()) {
+		    throw new RuntimeException("Invalid role ids");
+		}
+
 		user.setRoles(roles);
+
 	}
 	@Override
 	public LoginResponse login(LoginRequest loginRequest) {

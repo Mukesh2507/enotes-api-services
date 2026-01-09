@@ -12,50 +12,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class UserDto {
 
-	private Integer id;
+    private Integer id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String mobNo;
+    private String password;
 
-	private String firstName;
-	
-	private String lastName;
-	
-	private String email;
-	
-	private String mobNo;
-	
-	private String password;
+    private List<RoleDto> roles;
 
-	
-	@OneToMany(cascade =CascadeType.ALL)
-	private List<Role> roles;
-	
-	
-	
-	@AllArgsConstructor
-	@NoArgsConstructor
-	@Getter
-	@Setter
-	@Builder
-	public static class RoleDto{
-		private Integer id;
-		private String name;
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class RoleDto {
+        private Integer id;
+        private String name;
+    }
 }

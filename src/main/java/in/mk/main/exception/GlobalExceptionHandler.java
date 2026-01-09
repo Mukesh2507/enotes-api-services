@@ -2,6 +2,7 @@ package in.mk.main.exception;
 
 import java.io.FileNotFoundException;
 import java.lang.System.Logger;
+import java.nio.file.AccessDeniedException;
 import java.security.PublicKey;
 
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,14 @@ public class GlobalExceptionHandler {
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<?>handleAccessDeniedExeception(Exception e)
+	{
+		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		
+		return CommonUtil.createErrorBuildResponse(e.getMessage(), HttpStatus.FORBIDDEN);
 	}
 	
 	@ExceptionHandler(SuccessException.class)

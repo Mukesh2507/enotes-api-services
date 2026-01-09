@@ -16,116 +16,92 @@ import org.modelmapper.internal.bytebuddy.asm.Advice.Return;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import in.mk.main.entity.Role;
 import in.mk.main.entity.User;
+import in.mk.main.exception.JwtTokenExpiredException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.DecryptionKeyRequest;
 import io.jsonwebtoken.security.Keys;
-
 @Service
-public class JwtServiceImpl  implements JwtService {
+public class JwtServiceImpl implements JwtService {
 
-	private String secretKey="";
-	
-	
-	
-	
-	
-	
-	public JwtServiceImpl() {
-		try {
-			
-		KeyGenerator  keyGen=	KeyGenerator.getInstance("HmacSH256");
-		SecretKey sk=keyGen.generateKey();
-		
-		secretKey =Base64.getEncoder().encodeToString(sk.getEncoded());
-		
-		
-		} catch (Exception e) {
-			e.printStackTrace();
+    private String secretKey;
+
+    public JwtServiceImpl() {
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
+            keyGenerator.init(256);
+            SecretKey key = keyGenerator.generateKey();
+            this.secretKey = Base64.getEncoder().encodeToString(key.getEncoded());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String generateToken(User user) {
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+        claims.put("roles",
+        	    user.getRoles()
+        	        .stream()
+        	        .map(Role::getName)
+        	        .toList()
+        	);
+
+        claims.put("status", user.getStatus().getIsActive());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() +   60 * 60 * 1)) // 10 hours
+                .signWith(getKey())
+                .compact();
+    }
+
+    private Key getKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    @Override
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    public String role(String token) {
+        return (String) extractAllClaims(token).get("role");
+    }
+
+    private Claims extractAllClaims(String token) {
+        try {
+    	return Jwts.parser()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        }catch (ExpiredJwtException e) {
+			throw new JwtTokenExpiredException("Token is expired");
+		}catch (JwtException e) {
+			throw new JwtTokenExpiredException("invalid Jwt token");
 		}
-		
-	}
+    }
 
-	@Override
-	public String generateToken(User user) {
-	
-		
-		Map<String, Object> claims =new HashMap<>();
-		claims.put("id", user.getId());
-		claims.put("role",user.getRoles());
-		claims.put("status",user.getStatus().getIsActive());
-		
-		
-	String token =	Jwts.builder()
-		.claims().add(claims)
-		.subject(user.getEmail())
-         .issuedAt(new Date(System.currentTimeMillis()))
-         .expiration(new Date(System.currentTimeMillis()+60*60*60*10))
-         .and()
-         .signWith(getKey())
-	     .compact();
-		
-		return token;
-	}
+    @Override
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equalsIgnoreCase(userDetails.getUsername())
+                && !isTokenExpired(token);
+    }
 
-	private Key getKey() {
-		byte[] keyBytes =Decoders.BASE64.decode(secretKey);
-		return Keys.hmacShaKeyFor(keyBytes);
-	}
-
-	@Override
-	public String extractUsername(String token) {
-		Claims claims=extractAllClaims(token);
-	    return claims.getSubject();
-		
-	}
-	
-	
-	public String role(String token) {
-		Claims claims =extractAllClaims(token);
-		String role=(String)claims.get("role");
-		return role;
-	}
-
-	private Claims extractAllClaims(String token) {
-		
-	   Claims claims=Jwts.parser()
-			   .verifyWith(decryptKey(secretKey))
-			   .build().parseSignedClaims(token)
-			   .getPayload();
-		
-		return claims;
-	}
-
-	private SecretKey decryptKey(String secretKey2) {
-	byte[] keyBytes =	Decoders.BASE64.decode(secretKey2);
-	return Keys.hmacShaKeyFor(keyBytes);
-	
-	}
-
-	@Override
-	public Boolean validateToken(String token, UserDetails userDetails) {
-		
-		String username=extractUsername(token);
-		Boolean isExpired=isTokenExpired(token);
-		
-		
-		if(username.equalsIgnoreCase(userDetails.getUsername()) && isExpired ) {
-		
-		return true;
-	}
-      return false;
-}
-
-	private Boolean isTokenExpired(String token) {
-		Claims claims=extractAllClaims(token);
-		Date expiredDate=claims.getExpiration();
-		//10th today exp 11th 
-		
-		
-		return expiredDate.before(new Date());
-	}
-
+    private Boolean isTokenExpired(String token) {
+        Date expiration = extractAllClaims(token).getExpiration();
+        return expiration.before(new Date());
+    }
 }

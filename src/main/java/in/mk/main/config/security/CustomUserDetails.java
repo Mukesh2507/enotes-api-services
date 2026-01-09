@@ -29,7 +29,7 @@ public class CustomUserDetails implements UserDetails {
 		
 		List<SimpleGrantedAuthority> authorities =new ArrayList<>();
 		user.getRoles().forEach(r->{
-			authorities.add(new SimpleGrantedAuthority(r.getName()));
+			authorities.add(new SimpleGrantedAuthority("ROLE_"+r.getName()));
 		});
 		
 		
