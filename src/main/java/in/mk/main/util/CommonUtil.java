@@ -4,8 +4,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import in.mk.main.config.security.CustomUserDetails;
+import in.mk.main.dto.UserResponse;
 import in.mk.main.dto.handler.GenericResponse;
+import in.mk.main.entity.User;
 import jakarta.persistence.criteria.CriteriaBuilder.Case;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -88,5 +92,18 @@ public static String getContentType(String originalfileName) {
 public static String getUrl(HttpServletRequest request) {
 	String apiUrl = request.getRequestURI().toString();
 	return apiUrl;
+}
+
+public static User getLoggedInUSer() {
+	
+	try {
+		CustomUserDetails logUser=(CustomUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    return logUser.getUser();
+	} catch (Exception e) {
+		throw e;
+	}
+	
+	
+
 }
 }

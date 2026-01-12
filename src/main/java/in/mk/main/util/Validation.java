@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 
 import in.mk.main.dto.CategoryDto;
 import in.mk.main.dto.TodoDto;
-import in.mk.main.dto.UserDto;
+import in.mk.main.dto.UserRequest;
 import in.mk.main.enums.TodoStatus;
 import in.mk.main.exception.ExistDataException;
 import in.mk.main.exception.ResourceNotFoundException;
@@ -112,7 +112,7 @@ private UserRepository userRepo;
 		}
 		
 	}
-		public void userValidation(UserDto userDto) throws Exception {
+		public void userValidation(UserRequest userDto) throws Exception {
 			
 			
 			if (!StringUtils.hasText(userDto.getFirstName())) {

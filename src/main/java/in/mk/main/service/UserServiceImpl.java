@@ -16,7 +16,7 @@ import in.mk.main.config.security.CustomUserDetails;
 import in.mk.main.dto.Emailrequest;
 import in.mk.main.dto.LoginRequest;
 import in.mk.main.dto.LoginResponse;
-import in.mk.main.dto.UserDto;
+import in.mk.main.dto.UserRequest;
 import in.mk.main.entity.AccountStatus;
 import in.mk.main.entity.Role;
 import in.mk.main.entity.User;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService{
 	private JwtService jwtService;
 	
 	@Override
-	public Boolean register(UserDto userDto) throws Exception {
+	public Boolean register(UserRequest userDto) throws Exception {
 		
 		validation.userValidation(userDto);
 		
@@ -106,10 +106,10 @@ message=message.replace("[[url]]","http://localhost:8080/api/v1/home/verify?uid=
 		
 		emailService.sendEmail(emailrequest);
 	}
-	private void setRole(UserDto userDto, User user) {
+	private void setRole(UserRequest userDto, User user) {
 		List<Integer> roleIds = userDto.getRoles()
 		        .stream()
-		        .map(UserDto.RoleDto::getId)
+		        .map(UserRequest.RoleDto::getId)
 		        .toList();
 
 		List<Role> roles = roleRepo.findAllById(roleIds);
@@ -133,7 +133,7 @@ message=message.replace("[[url]]","http://localhost:8080/api/v1/home/verify?uid=
 		       String token =jwtService.generateToken(customUserDetails.getUser());
 		       
 		       LoginResponse loginResponse =LoginResponse.builder()
-		    		   .user(mapper.map(customUserDetails.getUser(),UserDto.class))
+		    		   .user(mapper.map(customUserDetails.getUser(),UserRequest.class))
 		    		   .token(token)
 		    		   .build();
 		       
