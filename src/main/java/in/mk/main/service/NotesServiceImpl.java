@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -200,12 +201,29 @@ public class NotesServiceImpl implements NotesService {
     }
 
     @Override
-    public NotesResponse getAllNotesByUser( Integer pageNo, Integer pageSize) {
+    public NotesResponse getAllNotesByUser(Integer pageNo, Integer pageSize) {
     	Integer userId = CommonUtil.getLoggedInUSer().getId();
 
         PageRequest pageableObj = PageRequest.of(pageNo, pageSize);
 
         Page<Notes> pagenotes = notesRepo.findByCreatedByAndIsDeletedFalse(userId, pageableObj);
+
+
+        List<NotesDto> notesDtos = pagenotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
+        NotesResponse notesResponse = NotesResponse.builder().notesDtos(notesDtos).pageNo(pagenotes.getNumber())
+                .pageSize(pagenotes.getSize()).totalElement((int) pagenotes.getTotalElements())
+                .totalPages(pagenotes.getTotalPages()).isFirst(pagenotes.isFirst()).isLast(pagenotes.isLast()).build();
+        return notesResponse;
+    }
+    
+    //search notes implementing
+    @Override
+    public NotesResponse getAllNotesByUserSearch( Integer pageNo, Integer pageSize,String keyword) {
+    	Integer userId = CommonUtil.getLoggedInUSer().getId();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        Page<Notes> pagenotes = notesRepo.searchNotes(keyword,userId,pageable);
 
 
         List<NotesDto> notesDtos = pagenotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
