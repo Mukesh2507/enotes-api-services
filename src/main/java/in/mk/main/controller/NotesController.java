@@ -92,8 +92,8 @@ public class NotesController {
 		@RequestParam(name="pageSize",defaultValue = "10")Integer pageSize
 		){
 		
-		Integer userId =1;
-		NotesResponse notes  =notesService.getAllNotesByUser(userId,pageNo,pageSize);
+
+		NotesResponse notes  =notesService.getAllNotesByUser(pageNo,pageSize);
 //		       if (CollectionUtils.isEmpty(notes)) {
 //			return ResponseEntity.noContent().build();
 //			}
@@ -120,8 +120,7 @@ public class NotesController {
 	@GetMapping("/recycle-bin")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?>getUserRecycleBinNotes() throws Exception{
-		Integer userId=1;
-	List<NotesDto> notes	=notesService.getUserRecycleBinNotes(userId);
+    List<NotesDto> notes	=notesService.getUserRecycleBinNotes();
 	if (CollectionUtils.isEmpty(notes)) {
 		return CommonUtil.createBuildResponseMessage("No data available in recycle bin", HttpStatus.OK);
 
@@ -137,6 +136,15 @@ public class NotesController {
 		notesService.hardDeleteNotes(id);
 		return CommonUtil.createBuildResponseMessage("Deletye success", HttpStatus.OK);
 	}
+	
+	@DeleteMapping("/delete")
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<?> emptyUserRecycleBin()throws Exception{
+         notesService.emptyRecycleBin();
+         return CommonUtil.createBuildResponseMessage("Delete success", HttpStatus.OK);
+	}
+	
+	
 	@GetMapping("/fav/{noteId}")
 	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?>favouriteNote(@PathVariable Integer noteId ) throws Exception{

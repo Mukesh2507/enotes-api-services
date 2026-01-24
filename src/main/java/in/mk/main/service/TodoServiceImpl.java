@@ -13,6 +13,7 @@ import in.mk.main.entity.Todo;
 import in.mk.main.enums.TodoStatus;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.respository.TodoRepository;
+import in.mk.main.util.CommonUtil;
 import in.mk.main.util.Validation;
 
 @Service
@@ -74,7 +75,7 @@ public class TodoServiceImpl implements TodoService {
 	@Override
 	public List<TodoDto> getTodoByUser() {
 	
-		Integer userId=1;
+		Integer userId=CommonUtil.getLoggedInUSer().getId();
 		
 		List<Todo> todos=todoRepository.findByCreatedBy(userId);
 		
