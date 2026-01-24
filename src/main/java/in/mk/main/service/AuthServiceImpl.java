@@ -17,6 +17,7 @@ import in.mk.main.dto.Emailrequest;
 import in.mk.main.dto.LoginRequest;
 import in.mk.main.dto.LoginResponse;
 import in.mk.main.dto.UserRequest;
+import in.mk.main.dto.UserResponse;
 import in.mk.main.entity.AccountStatus;
 import in.mk.main.entity.Role;
 import in.mk.main.entity.User;
@@ -78,7 +79,7 @@ public class AuthServiceImpl implements AuthService{
 	    	
 	    	//send email logic here 
 	    	
-	    	emailSender(saveUser);
+	    	emailSendForRegister(saveUser);
 	    	
 	    	return true;
 	    	
@@ -87,7 +88,7 @@ public class AuthServiceImpl implements AuthService{
 		
 		return false;
 	}
-	private void emailSender(User saveUser) throws Exception {
+	private void emailSendForRegister(User saveUser) throws Exception {
 		
 		String message ="Hi, <b>[[username]]</b><br>"
 		        + "Your account registered successfully.<br>"
@@ -133,7 +134,7 @@ message=message.replace("[[url]]","http://localhost:8080/api/v1/home/verify?uid=
 		       String token =jwtService.generateToken(customUserDetails.getUser());
 		       
 		       LoginResponse loginResponse =LoginResponse.builder()
-		    		   .user(mapper.map(customUserDetails.getUser(),UserRequest.class))
+		    		   .user(mapper.map(customUserDetails.getUser(),UserResponse.class))
 		    		   .token(token)
 		    		   .build();
 		       
