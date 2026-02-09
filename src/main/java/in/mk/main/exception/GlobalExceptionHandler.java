@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import in.mk.main.util.CommonUtil;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -24,7 +26,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleExeception(Exception e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		
+		log.error("GlobalExceptionHandler :: handleException() :{}",e.getMessage());
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -32,7 +34,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleAccessDeniedExeception(Exception e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		
+		log.error("GlobalExceptionHandler :: handleAccessDeniedException() :{}",e.getMessage());
+
 		return CommonUtil.createErrorBuildResponse(e.getMessage(), HttpStatus.FORBIDDEN);
 	}
 	
@@ -40,16 +43,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleSuccessException(SuccessException e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		
+		log.error("GlobalExceptionHandler :: handleSuccessException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.OK);
 	}
 
 	
 	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<?> handleIllegalArgumentexception(IllegalArgumentException e){
+	public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e){
 		
 		//log.error("GlobalExceptionHandler ::handleException::",e.getMessage());
-		
+		log.error("GlobalExceptionHandler : handleIllegalArgumentException() :{}",e.getMessage());
+
 		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	{
@@ -60,6 +65,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleNullPointerExeception(Exception e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		log.error("GlobalExceptionHandler : handleNullPointerException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
@@ -68,6 +75,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleResourceNotFoundException(Exception e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+		log.error("GlobalExceptionHandler : handleResourceNotFoundException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.NOT_FOUND);
 
 	}
@@ -76,6 +85,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleValidationException(ValidationException e)
 	{
 		//return new ResponseEntity<>(e.getErrors(),HttpStatus.BAD_REQUEST);
+		log.error("GlobalExceptionHandler : handleValidationException() :{}",e.getMessage());
+
 		return CommonUtil.createErrorBuildResponse(e.getErrors(), HttpStatus.BAD_REQUEST);
 
 	}
@@ -84,6 +95,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleExistDataException(ExistDataException e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+		log.error("GlobalExceptionHandler : handleExistDataException() :{}",e.getMessage());
+
 		return CommonUtil.createErrorBuildResponse(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
@@ -92,6 +105,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleHttpMessageNotReadableException(HttpMessageNotReadableException e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		log.error("GlobalExceptionHandler : handleHttpMessageNotReadableException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 
 	}
@@ -100,6 +115,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleFileNotFoundException(FileNotFoundException e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		log.error("GlobalExceptionHandler : handleFileNotFoundException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.NOT_FOUND);
 
 	}
@@ -107,6 +124,8 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?>handleBadCreadentialException(BadCredentialsException e)
 	{
 		//return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+		log.error("GlobalExceptionHandler : handleBadCreadentialException() :{}",e.getMessage());
+
 		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
 
 	}

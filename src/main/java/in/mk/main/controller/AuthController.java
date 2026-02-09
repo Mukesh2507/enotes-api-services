@@ -12,32 +12,43 @@ import org.springframework.web.bind.annotation.RestController;
 import in.mk.main.dto.LoginRequest;
 import in.mk.main.dto.LoginResponse;
 import in.mk.main.dto.UserRequest;
+import in.mk.main.endpoint.AuthControllerEndpoint;
 import in.mk.main.service.AuthService;
 import in.mk.main.util.CommonUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @RestController
-@RequestMapping("/api/v1/auth")
-public class AuthController {
+
+public class AuthController implements AuthControllerEndpoint {
    
 	
 	@Autowired
 	private AuthService authService;
 	
 	
-	@PostMapping("/")
+	@Override
 	public ResponseEntity<?> registerUser(@RequestBody UserRequest userDto,HttpServletRequest request) throws Exception
 	{
+		log.info("AuthController : registerUsser() :excecution start");
+
+
 		String url=CommonUtil.getUrl(request);
 		Boolean register = authService.register(userDto);
-		if (register) {
-			return CommonUtil.createBuildResponseMessage("Register Successfully", HttpStatus.CREATED );
-			
-		}else {
+		if (!register) {
+			log.info("Error ;{)","register failed");
+
 			return CommonUtil.createErrorResponseMessage("Register failed",HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+
+		}	
+		
+		log.info("AuthController : registerUsser() :excecution end");
+        return CommonUtil.createBuildResponseMessage("Register Successfully", HttpStatus.CREATED );
+		
 	}
-		@PostMapping("/login")
+		@Override
 		public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception
 		{
 			LoginResponse loginResponse=authService.login(loginRequest);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import in.mk.main.dto.CategoryDto;
 import in.mk.main.dto.CategoryResponse;
+import in.mk.main.endpoint.CategoryControllerEndpoint;
 import in.mk.main.entity.Category;
 import in.mk.main.exception.ResourceNotFoundException;
 import in.mk.main.service.CategoryService;
@@ -24,8 +25,8 @@ import in.mk.main.util.CommonUtil;
 
 
 @RestController
-@RequestMapping("/api/v1/category")
-public class CategoryController {
+
+public class CategoryController  implements CategoryControllerEndpoint {
 	
 	@Autowired
 	private CategoryService categoryService;
@@ -33,8 +34,7 @@ public class CategoryController {
 	
 	//Is used to create new data in datbase
 	//requestbody ensure data will be return in json or xml formate
-	@PostMapping("/save")
-	@PreAuthorize("hasRole('ADMIN')")
+	@Override
 	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto) {
 	    Boolean saveCategory = categoryService.saveCategory(categoryDto);
 
@@ -45,8 +45,7 @@ public class CategoryController {
 	    }
 	}
 
-	@GetMapping("/")
-	@PreAuthorize("hasRole('ADMIN')")
+	@Override
 	public ResponseEntity<?> getAllCategory() {
 	    List<CategoryDto> allcategory = categoryService.getAllCategory();
 	    if (CollectionUtils.isEmpty(allcategory)) {
@@ -56,8 +55,7 @@ public class CategoryController {
 	}
 
 	
-	@GetMapping("/active")
-	@PreAuthorize("hasAnyRole('USER','ADMIN')")
+	@Override
 	public ResponseEntity<?> getActiveCategory() {
 	    List<CategoryResponse> allcategory = categoryService.getActiveCategory();
 
@@ -68,8 +66,7 @@ public class CategoryController {
 	}
 
 		
-	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@Override
 	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception{
 		
 		
@@ -89,8 +86,7 @@ public class CategoryController {
 	
 	
 
-@DeleteMapping("/{id}")
-@PreAuthorize("hasRole('ADMIN')")
+@Override
 public ResponseEntity<?> deleteCategoryById(@PathVariable Integer id){
 	Boolean deleted = categoryService.deleteCategory(id);
 

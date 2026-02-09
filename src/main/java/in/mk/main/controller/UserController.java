@@ -12,20 +12,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import in.mk.main.dto.PasswordChangeRequest;
 import in.mk.main.dto.UserResponse;
+import in.mk.main.endpoint.UserControllerEndpoint;
 import in.mk.main.entity.User;
 import in.mk.main.service.UserService;
 import in.mk.main.util.CommonUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
-public class UserController {
+
+public class UserController implements UserControllerEndpoint {
     @Autowired
 	private ModelMapper mapper;
     
     @Autowired
     private UserService userService;
     
-	@GetMapping("/profile")
+    @Override
 	public ResponseEntity<?> getProfile(){
 		
 	User loggedInUser=CommonUtil.getLoggedInUSer();
@@ -33,8 +36,7 @@ public class UserController {
 		return CommonUtil.createBuildResponse(userResponse, HttpStatus.OK);
 	}
 	
-	
-	@PostMapping("/chng-pswd")
+	@Override
 	public ResponseEntity<?> changePassword(@RequestBody PasswordChangeRequest passwordRequest){
 		
 	    userService.changePassword(passwordRequest);

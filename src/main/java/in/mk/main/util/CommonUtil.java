@@ -12,6 +12,8 @@ import in.mk.main.dto.handler.GenericResponse;
 import in.mk.main.entity.User;
 import jakarta.persistence.criteria.CriteriaBuilder.Case;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 
 public class CommonUtil {
 

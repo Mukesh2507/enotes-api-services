@@ -24,7 +24,9 @@ import in.mk.main.entity.User;
 import in.mk.main.respository.RoleRepository;
 import in.mk.main.respository.UserRepository;
 import in.mk.main.util.Validation;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService{
 
@@ -60,6 +62,9 @@ public class AuthServiceImpl implements AuthService{
 	@Override
 	public Boolean register(UserRequest userDto) throws Exception {
 		
+		String url = "http://localhost:8080";
+		log.info("AuthServiceImpl : register() :excecution Start");
+
 		validation.userValidation(userDto);
 		
 		User  user=mapper.map(userDto, User.class );
@@ -74,21 +79,20 @@ public class AuthServiceImpl implements AuthService{
 		user.setStatus(status);
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 	    User	saveUser=userRepos.save(user);
-	    if (!ObjectUtils.isEmpty(saveUser)) {
-	    	
-	    	
+	    if (ObjectUtils.isEmpty(saveUser)) {
 	    	//send email logic here 
-	    	
-	    	emailSendForRegister(saveUser);
-	    	
-	    	return true;
-	    	
-			
-		}
+	    	log.info("error : {}","user not saved");
+	        return false;
+	    	}
+	    
+	    emailSendForRegister(saveUser,url);
+	    log.info("message:{}","email send success");
+    	log.info("AuthServiceImpl : register() :excecution End");
+    	return true;
+
 		
-		return false;
 	}
-	private void emailSendForRegister(User saveUser) throws Exception {
+	private void emailSendForRegister(User saveUser,String url) throws Exception {
 		
 		String message ="Hi, <b>[[username]]</b><br>"
 		        + "Your account registered successfully.<br>"
