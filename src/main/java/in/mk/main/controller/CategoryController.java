@@ -35,7 +35,7 @@ public class CategoryController  implements CategoryControllerEndpoint {
 	//Is used to create new data in datbase
 	//requestbody ensure data will be return in json or xml formate
 	@Override
-	public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto) {
+	public ResponseEntity<?> saveCategory(CategoryDto categoryDto) {
 	    Boolean saveCategory = categoryService.saveCategory(categoryDto);
 
 	    if (saveCategory) {
@@ -67,7 +67,7 @@ public class CategoryController  implements CategoryControllerEndpoint {
 
 		
 	@Override
-	public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception{
+	public ResponseEntity<?> getCategoryDetailsById(Integer id) throws Exception{
 		
 		
 		
@@ -87,7 +87,7 @@ public class CategoryController  implements CategoryControllerEndpoint {
 	
 
 @Override
-public ResponseEntity<?> deleteCategoryById(@PathVariable Integer id){
+public ResponseEntity<?> deleteCategoryById( Integer id){
 	Boolean deleted = categoryService.deleteCategory(id);
 
 	if (deleted) {

@@ -30,7 +30,7 @@ public class AuthController implements AuthControllerEndpoint {
 	
 	
 	@Override
-	public ResponseEntity<?> registerUser(@RequestBody UserRequest userDto,HttpServletRequest request) throws Exception
+	public ResponseEntity<?> registerUser(UserRequest userDto,HttpServletRequest request) throws Exception
 	{
 		log.info("AuthController : registerUsser() :excecution start");
 
@@ -49,7 +49,7 @@ public class AuthController implements AuthControllerEndpoint {
 		
 	}
 		@Override
-		public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception
+		public ResponseEntity<?> login(LoginRequest loginRequest) throws Exception
 		{
 			LoginResponse loginResponse=authService.login(loginRequest);
 			
