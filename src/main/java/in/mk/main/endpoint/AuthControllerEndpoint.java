@@ -7,16 +7,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import in.mk.main.dto.LoginRequest;
 import in.mk.main.dto.UserRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 
+
+@Tag(name="Authentication",description="All the user Authentication Apis")
 @RequestMapping("/api/v1/auth")
 public interface AuthControllerEndpoint  {
 	
 	
-	
-	@PostMapping("/")
+	@Operation(summary="User Register Endpoint",tags= {"Authentication","Home"})
+	@PostMapping("/register")
 	public ResponseEntity<?> registerUser(@RequestBody UserRequest userDto,HttpServletRequest request) throws Exception;
 	
+	@Operation(summary="User Login Endpoint",tags= {"Authentication","Home"})
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) throws Exception;
 
