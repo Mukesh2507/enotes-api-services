@@ -1,6 +1,8 @@
 package in.mk.main.service;
 
 import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +10,8 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.bytebuddy.asm.Advice.Return;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -31,6 +35,9 @@ public class CategoryServiceImpl implements CategoryService{
 	
 	@Autowired
     private Validation validation;
+	
+	@Autowired
+	private CacheManagerService cacheManagerService;
 	
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
@@ -107,6 +114,7 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
+	@Cacheable(value = "getCategoryById",key = "#id")
 	public CategoryDto getCategoryById(Integer id) throws Exception {
 		Category category = categoryRepository.findByIdAndIsDeletedFalse(id).orElseThrow(()->new ResourceNotFoundException("Category not found with id=" +id));
 		
@@ -120,6 +128,9 @@ public class CategoryServiceImpl implements CategoryService{
 	}
 
 	@Override
+	
+	@CacheEvict(value = "getCategoryById",key = "#id")
+
 	public Boolean deleteCategory(Integer id) {
 		
 		
@@ -129,6 +140,12 @@ public class CategoryServiceImpl implements CategoryService{
 		Category category=findByCategory.get();
 		category.setIsDeleted(true);
 		categoryRepository.save(category);
+		
+		//reove from cache
+		
+		cacheManagerService.removeCacheByName(Arrays.asList("allCategory","activeCategory"));
+		
+		
 			return true;
 		}
 		return false;

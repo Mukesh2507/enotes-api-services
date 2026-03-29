@@ -2,6 +2,7 @@ package in.mk.main.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,6 +47,7 @@ public class CategoryController  implements CategoryControllerEndpoint {
 	}
 
 	@Override
+	@Cacheable("allCategory")
 	public ResponseEntity<?> getAllCategory() {
 	    List<CategoryDto> allcategory = categoryService.getAllCategory();
 	    if (CollectionUtils.isEmpty(allcategory)) {
@@ -56,6 +58,7 @@ public class CategoryController  implements CategoryControllerEndpoint {
 
 	
 	@Override
+	@Cacheable("activeCategory")
 	public ResponseEntity<?> getActiveCategory() {
 	    List<CategoryResponse> allcategory = categoryService.getActiveCategory();
 
